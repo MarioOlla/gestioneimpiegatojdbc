@@ -234,7 +234,7 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 
 	@Override
 	public List<Impiegato> findAllByCompagnia(Compagnia input) throws Exception {
-		if (input != null)
+		if (input == null)
 			throw new Exception("Impossibile effettuare la ricerca. Input non valido");
 		return this.findByExample(new Impiegato(0, null, null, null, null, null, input));
 	}

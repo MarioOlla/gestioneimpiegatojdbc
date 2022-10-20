@@ -85,7 +85,7 @@ public class TestImpiegato {
 		if (elencoVociEsistenti.isEmpty())
 			throw new RuntimeException("testGetCompagnia : FAILED, il DB e' vuoto");
 		Compagnia risultatoRicerca = compagniaDAOInstance.get(elencoVociEsistenti.get(0).getId());
-		if (risultatoRicerca.equals(elencoVociEsistenti.get(0)))
+		if (!risultatoRicerca.equals(elencoVociEsistenti.get(0)))
 			throw new RuntimeException("testGetCompagnia : FAILED, non ho trovato l'elemento cercato");
 		System.out.println("___fine testGetCompagnia : PASSED");
 	}
@@ -122,7 +122,7 @@ public class TestImpiegato {
 		if (elencoVociEsistenti.isEmpty())
 			throw new RuntimeException("testGetImpiegato : FAILED, il DB e' vuoto");
 		Impiegato risultatoRicerca = impiegatoDAOInstance.get(elencoVociEsistenti.get(0).getId());
-		if (risultatoRicerca.equals(elencoVociEsistenti.get(0)))
+		if (!risultatoRicerca.equals(elencoVociEsistenti.get(0)))
 			throw new RuntimeException("testGetImpiegato : FAILED, non ho trovato l'elemento cercato");
 		System.out.println("___fine testGetImpiegato : PASSED");
 	}
@@ -169,7 +169,7 @@ public class TestImpiegato {
 		if (elencoVociEsistenti.isEmpty())
 			throw new RuntimeException("testFindByExampleCompagnia : FAILED,il db e' vuoto");
 		List<Compagnia> risultatoRicerca = compagniaDAOInstance
-				.findByExample(new Compagnia(0, "ma", 0, new SimpleDateFormat("dd-MM-yyyy").parse("05-03-1990")));
+				.findByExample(new Compagnia(0, "ma", 0, null));
 		if (risultatoRicerca.isEmpty())
 			throw new RuntimeException("testFindByExampleCompagnia : FAILED, la ricerca non e' andata a buon fine");
 		System.out.println("___fine testFindByExampleCompagnia : PASSED");
@@ -181,7 +181,7 @@ public class TestImpiegato {
 		if (elencoVociEsistenti.isEmpty())
 			throw new RuntimeException("testFindByExampleImpiegato : FAILED,il db e' vuoto");
 		List<Impiegato> risultatoRicerca = impiegatoDAOInstance.findByExample(new Impiegato(0, null, "gio", null,
-				new SimpleDateFormat("dd-MM-yyyy").parse("05-03-1990"), null, null));
+				null, null, null));
 		if (risultatoRicerca.isEmpty())
 			throw new RuntimeException("testFindByExampleImpiegato : FAILED, la ricerca non e' andata a buon fine");
 		System.out.println("___fine testFindByExampleImpiegato : PASSED");

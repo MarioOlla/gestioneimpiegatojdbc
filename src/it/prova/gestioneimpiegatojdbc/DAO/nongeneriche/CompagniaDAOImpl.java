@@ -145,7 +145,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 				query += "where ";
 			else
 				query += "and ";
-			query += "fatturatoannuo >= '" + input.getFatturatoAnnuo() + "%' ";
+			query += "fatturatoannuo >= " + input.getFatturatoAnnuo() + " ";
 			almenoUnCampoNonNullo = true;
 		}
 		if (input.getDataFondazione() != null) {
