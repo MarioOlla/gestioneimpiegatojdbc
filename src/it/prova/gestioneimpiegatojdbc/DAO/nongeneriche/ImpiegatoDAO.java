@@ -9,6 +9,8 @@ import it.prova.gestioneimpiegatojdbc.model.Impiegato;
 
 public interface ImpiegatoDAO extends IBaseDAO<Impiegato> {
 	public abstract List<Impiegato> findAllByCompagnia(Compagnia input) throws Exception;
-	public abstract List<Impiegato> countByDataFondazioneCompagniaGreaterThan(Date dataFondazioneDa) throws Exception;
+
+	public abstract List<Integer> countByDataFondazioneCompagniaGreaterThan(Date dataFondazioneDa) throws Exception;
+
 	public abstract List<Impiegato> findAllErroriAssunzione() throws Exception;
 }

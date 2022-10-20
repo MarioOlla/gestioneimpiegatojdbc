@@ -1,6 +1,7 @@
 package it.prova.gestioneimpiegatojdbc.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Impiegato {
 	private Long id;
@@ -10,9 +11,9 @@ public class Impiegato {
 	private Date dataNascita;
 	private Date dataAssunzione;
 	private Compagnia compagnia;
-	
+
 	public Impiegato() {
-		
+
 	}
 
 	public Impiegato(long id, String nome, String cognome, String codiceFiscale, Date dataNascita, Date dataAssunzione,
@@ -86,9 +87,27 @@ public class Impiegato {
 	@Override
 	public String toString() {
 		return "Impiegato [id=" + id + ", nome=" + nome + ", cognome=" + cognome + ", codice fiscale=" + codiceFiscale
-				+ ", data di nascita=" + dataNascita + ", data assunzione=" + dataAssunzione + ", compagnia=" + compagnia
-				+ "]";
+				+ ", data di nascita=" + dataNascita + ", data assunzione=" + dataAssunzione + ", compagnia="
+				+ compagnia + "]";
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codiceFiscale, cognome, dataAssunzione, dataNascita, nome);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Impiegato other = (Impiegato) obj;
+		return Objects.equals(codiceFiscale, other.codiceFiscale) && Objects.equals(cognome, other.cognome)
+				&& Objects.equals(dataAssunzione, other.dataAssunzione)
+				&& Objects.equals(dataNascita, other.dataNascita) && Objects.equals(nome, other.nome);
+	}
+
 }
