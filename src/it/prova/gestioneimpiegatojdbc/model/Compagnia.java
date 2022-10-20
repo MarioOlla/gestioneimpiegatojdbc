@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 public class Compagnia {
-	private long id;
+	private Long id;
 	private String ragioneSociale;
-	private int fatturatoAnnuo;
+	private Integer fatturatoAnnuo;
 	private Date dataFondazione;
 	private List<Impiegato> impiegati = new ArrayList<>();
 	
@@ -25,7 +25,7 @@ public class Compagnia {
 
 
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -41,7 +41,7 @@ public class Compagnia {
 		this.ragioneSociale = ragioneSociale;
 	}
 
-	public int getFatturatoAnnuo() {
+	public Integer getFatturatoAnnuo() {
 		return fatturatoAnnuo;
 	}
 

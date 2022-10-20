@@ -3,7 +3,7 @@ package it.prova.gestioneimpiegatojdbc.model;
 import java.util.Date;
 
 public class Impiegato {
-	private long id;
+	private Long id;
 	private String nome;
 	private String cognome;
 	private String codiceFiscale;
@@ -27,7 +27,7 @@ public class Impiegato {
 		this.compagnia = compagnia;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
