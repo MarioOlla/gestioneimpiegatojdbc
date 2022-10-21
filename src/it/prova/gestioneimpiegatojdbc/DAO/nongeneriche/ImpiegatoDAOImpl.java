@@ -3,7 +3,6 @@ package it.prova.gestioneimpiegatojdbc.DAO.nongeneriche;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.List;
 import it.prova.gestioneimpiegatojdbc.DAO.AbstractMySQLDAO;
 import it.prova.gestioneimpiegatojdbc.model.Compagnia;
 import it.prova.gestioneimpiegatojdbc.model.Impiegato;
+import it.prova.gestioneimpiegatojdbc.util.DateConverter;
 
 public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 
@@ -34,14 +34,14 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 				temp.setNome(rs.getString("i.nome"));
 				temp.setCognome(rs.getString("i.cognome"));
 				temp.setCodiceFiscale(rs.getString("i.codicefiscale"));
-				temp.setDataNascita(rs.getDate("i.datanascita"));
-				temp.setDataAssunzione(rs.getDate("i.dataassunzione"));
+				temp.setDataNascita( DateConverter.fromSqlToUtil( rs.getDate("i.datanascita")));
+				temp.setDataAssunzione(DateConverter.fromSqlToUtil(  rs.getDate("i.dataassunzione")));
 
 				Compagnia compTemp = new Compagnia();
 				compTemp.setId(rs.getLong("c.id"));
 				compTemp.setRagioneSociale(rs.getString("c.ragionesociale"));
 				compTemp.setFatturatoAnnuo(rs.getInt("c.fatturatoannuo"));
-				compTemp.setDataFondazione(rs.getDate("c.datafondazione"));
+				compTemp.setDataFondazione( DateConverter.fromSqlToUtil( rs.getDate("c.datafondazione")));
 				temp.setCompagnia(compTemp);
 				result.add(temp);
 			}
@@ -71,14 +71,14 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 					result.setNome(rs.getString("i.nome"));
 					result.setCognome(rs.getString("i.cognome"));
 					result.setCodiceFiscale(rs.getString("i.codicefiscale"));
-					result.setDataNascita(rs.getDate("i.datanascita"));
-					result.setDataAssunzione(rs.getDate("i.dataassunzione"));
+					result.setDataNascita( DateConverter.fromSqlToUtil( rs.getDate("i.datanascita")));
+					result.setDataAssunzione(DateConverter.fromSqlToUtil( rs.getDate("i.dataassunzione")));
 
 					Compagnia compTemp = new Compagnia();
 					compTemp.setId(rs.getLong("c.id"));
 					compTemp.setRagioneSociale(rs.getString("c.ragionesociale"));
 					compTemp.setFatturatoAnnuo(rs.getInt("c.fatturatoannuo"));
-					compTemp.setDataFondazione(rs.getDate("c.datafondazione"));
+					compTemp.setDataFondazione(DateConverter.fromSqlToUtil( rs.getDate("c.datafondazione")));
 					result.setCompagnia(compTemp);
 				}
 			}
@@ -191,7 +191,7 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 				query += "where ";
 			else
 				query += "and ";
-			query += "datanascita >= '" + input.getDataNascita() + "' ";
+			query += "datanascita >= '" + DateConverter.fromUtilToSql( input.getDataNascita()) + "' ";
 			almenoUnCampoNonNullo = true;
 		}
 		if (input.getDataAssunzione() != null) {
@@ -199,7 +199,7 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 				query += "where ";
 			else
 				query += "and ";
-			query += "dataassunzione >= '" + input.getDataAssunzione() + "' ";
+			query += "dataassunzione >= '" + DateConverter.fromUtilToSql( input.getDataAssunzione()) + "' ";
 			almenoUnCampoNonNullo = true;
 		}
 		if (input.getCompagnia() != null && input.getCompagnia().getId() > 0) {
@@ -211,7 +211,6 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 		}
 		query += ";";
 
-		System.out.println(query);
 		try (Statement s = connection.createStatement(); ResultSet rs = s.executeQuery(query)) {
 			Impiegato temp;
 			while (rs.next()) {
@@ -272,14 +271,14 @@ public class ImpiegatoDAOImpl extends AbstractMySQLDAO implements ImpiegatoDAO {
 				temp.setNome(rs.getString("i.nome"));
 				temp.setCognome(rs.getString("i.cognome"));
 				temp.setCodiceFiscale(rs.getString("i.codicefiscale"));
-				temp.setDataNascita(rs.getDate("i.datanascita"));
-				temp.setDataAssunzione(rs.getDate("i.dataassunzione"));
+				temp.setDataNascita(DateConverter.fromSqlToUtil(  rs.getDate("i.datanascita")));
+				temp.setDataAssunzione(DateConverter.fromSqlToUtil(  rs.getDate("i.dataassunzione")));
 
 				Compagnia compTemp = new Compagnia();
 				compTemp.setId(rs.getLong("c.id"));
 				compTemp.setRagioneSociale(rs.getString("c.ragionesociale"));
 				compTemp.setFatturatoAnnuo(rs.getInt("c.fatturatoannuo"));
-				compTemp.setDataFondazione(rs.getDate("c.datafondazione"));
+				compTemp.setDataFondazione(DateConverter.fromSqlToUtil(rs.getDate("c.datafondazione")));
 				temp.setCompagnia(compTemp);
 				result.add(temp);
 			}

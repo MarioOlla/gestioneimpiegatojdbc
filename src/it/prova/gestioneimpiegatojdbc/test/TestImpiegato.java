@@ -1,7 +1,6 @@
 package it.prova.gestioneimpiegatojdbc.test;
 
 import java.sql.Connection;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +24,8 @@ public class TestImpiegato {
 
 			compagniaDAOInstance = new CompagniaDAOImpl(connection);
 			impiegatoDAOInstance = new ImpiegatoDAOImpl(connection);
+			
+			System.out.println("////////// INIZIO TEST IMPIEGATI ///////////////////////////////////////////////////////////////////////////////");
 
 			System.out.println("Sul DB di Compagnia ci sono " + compagniaDAOInstance.list().size() + " record.");
 			System.out.println("Sul DB di Impiegato ci sono " + impiegatoDAOInstance.list().size() + " record.");
@@ -49,6 +50,8 @@ public class TestImpiegato {
 			testFindByExampleImpiegato(impiegatoDAOInstance);
 
 			testFindAllByRagioneSocialeContieneCompagnia(compagniaDAOInstance);
+			
+			testFindAllByDataAssunzioneMaggioreDi(compagniaDAOInstance);
 
 			testFindAllByCompagnia(impiegatoDAOInstance, compagniaDAOInstance);
 
@@ -63,10 +66,23 @@ public class TestImpiegato {
 			testDeleteCompagnia(compagniaDAOInstance);
 
 			System.out.println("Sul DB di Compagnia ci sono " + compagniaDAOInstance.list().size() + " record.");
+			
+			System.out.println("////////// FINE TEST IMPIEGATI /////////////////////////////////////////////////////////////////////////////////");
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void testFindAllByDataAssunzioneMaggioreDi(CompagniaDAO compagniaDAOInstance)throws Exception {
+		System.out.println("\n___inizio testFindAllByDataAssunzioneMaggioreDi...");
+		if(compagniaDAOInstance.list().isEmpty())
+			throw new RuntimeException("testFindAllByDataAssunzioneMaggioreDi : FAILED, non ci sono record sul DB");
+		Date dataAssunzioneMinima = compagniaDAOInstance.list().get(0).getDataFondazione();
+		List<Compagnia> risultatoRicerca = compagniaDAOInstance.findAllByDataAssunzioneMaggioreDi(dataAssunzioneMinima);
+		if(risultatoRicerca.isEmpty())
+			throw new RuntimeException("testFindAllByDataAssunzioneMaggioreDi : FAILED, la ricerca non ha prodotto i risultati attesi");
+		System.out.println("___fine testFindAllByDataAssunzioneMaggioreDi : PASSED");
 	}
 
 	private static void testInsertCompagnia(CompagniaDAO compagniaDAOInstance) throws Exception {
@@ -169,7 +185,7 @@ public class TestImpiegato {
 		if (elencoVociEsistenti.isEmpty())
 			throw new RuntimeException("testFindByExampleCompagnia : FAILED,il db e' vuoto");
 		List<Compagnia> risultatoRicerca = compagniaDAOInstance
-				.findByExample(new Compagnia(0, "ma", 0, null));
+				.findByExample(new Compagnia(0, "ma", 0, new SimpleDateFormat("yyyy-MM-dd").parse("1980-03-05")));
 		if (risultatoRicerca.isEmpty())
 			throw new RuntimeException("testFindByExampleCompagnia : FAILED, la ricerca non e' andata a buon fine");
 		System.out.println("___fine testFindByExampleCompagnia : PASSED");
@@ -186,12 +202,6 @@ public class TestImpiegato {
 			throw new RuntimeException("testFindByExampleImpiegato : FAILED, la ricerca non e' andata a buon fine");
 		System.out.println("___fine testFindByExampleImpiegato : PASSED");
 	}
-
-	// private static void
-	// testFindAllByDataAssunzioneMaggioreDiCompagnia(CompagniaDAO
-	// compagniaDAOInstance) {
-//
-//	}
 
 	private static void testFindAllByRagioneSocialeContieneCompagnia(CompagniaDAO compagniaDAOInstance)
 			throws Exception {

@@ -10,7 +10,7 @@ import java.util.List;
 
 import it.prova.gestioneimpiegatojdbc.DAO.AbstractMySQLDAO;
 import it.prova.gestioneimpiegatojdbc.model.Compagnia;
-import it.prova.gestioneimpiegatojdbc.model.Impiegato;
+import it.prova.gestioneimpiegatojdbc.util.DateConverter;
 
 public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 
@@ -30,7 +30,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 				compTemp.setId(rs.getLong("id"));
 				compTemp.setRagioneSociale(rs.getString("ragionesociale"));
 				compTemp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
-				compTemp.setDataFondazione(rs.getDate("datafondazione"));
+				compTemp.setDataFondazione(DateConverter.fromSqlToUtil(rs.getDate("datafondazione")));
 				result.add(compTemp);
 			}
 
@@ -56,7 +56,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 					result.setId(rs.getLong("id"));
 					result.setRagioneSociale(rs.getString("ragionesociale"));
 					result.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
-					result.setDataFondazione(rs.getDate("datafondazione"));
+					result.setDataFondazione(DateConverter.fromSqlToUtil(rs.getDate("datafondazione")));
 				}
 			}
 		} catch (Exception e) {
@@ -77,7 +77,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 				"update compagnia set ragionesociale=?, fatturatoannuo=?, datafondazione=? where id=?;")) {
 			ps.setString(1, input.getRagioneSociale());
 			ps.setInt(2, input.getFatturatoAnnuo());
-			ps.setDate(3, new java.sql.Date(input.getDataFondazione().getTime()));
+			ps.setDate(3, DateConverter.fromUtilToSql (input.getDataFondazione()));
 			ps.setLong(4, input.getId());
 			result = ps.executeUpdate();
 		} catch (Exception e) {
@@ -98,7 +98,7 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 				"insert into compagnia (ragionesociale, fatturatoannuo, datafondazione) values (?,?,?);")) {
 			ps.setString(1, input.getRagioneSociale());
 			ps.setInt(2, input.getFatturatoAnnuo());
-			ps.setDate(3, new java.sql.Date(input.getDataFondazione().getTime()));
+			ps.setDate(3, DateConverter.fromUtilToSql (input.getDataFondazione()));
 			result = ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,18 +153,16 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 				query += "where ";
 			else
 				query += "and ";
-			query += "datafondazione >= '" + input.getDataFondazione() + "' ";
+			query += "datafondazione >= '" + DateConverter.fromUtilToSql( input.getDataFondazione()) + "' ";
 		}
 		query += ";";
-
-		System.out.println(query);
 		try (Statement s = connection.createStatement(); ResultSet rs = s.executeQuery(query)) {
 			Compagnia temp;
 			while (rs.next()) {
 				temp = new Compagnia();
 				temp.setRagioneSociale(rs.getString("ragionesociale"));
 				temp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
-				temp.setDataFondazione(rs.getDate("datafondazione"));
+				temp.setDataFondazione(DateConverter.fromSqlToUtil(rs.getDate("datafondazione")));
 				temp.setId(rs.getLong("ID"));
 				result.add(temp);
 			}
@@ -176,12 +174,30 @@ public class CompagniaDAOImpl extends AbstractMySQLDAO implements CompagniaDAO {
 	}
 
 	@Override
-	public List<Impiegato> findAllByDataAssunzioneMaggioreDi(Date dataAssunzioneDa) throws Exception {
+	public List<Compagnia> findAllByDataAssunzioneMaggioreDi(Date dataAssunzioneDa) throws Exception {
 		if (isNotActive())
 			throw new Exception("Impossibile effettuare la ricerca. La connessione non e' attiva.");
 		if (dataAssunzioneDa == null)
 			throw new Exception("Impossibile effettuare la ricerca. Input non valido.");
-		return null;
+		List<Compagnia> result = new ArrayList<>();
+		try(PreparedStatement ps = connection.prepareStatement("select distinct * from compagnia c inner join impiegato i on i.compagnia_id=c.id where i.dataassunzione > ?")){
+			ps.setDate(1, DateConverter.fromUtilToSql(dataAssunzioneDa));
+			try(ResultSet rs = ps.executeQuery()){
+				Compagnia temp ;
+				while(rs.next()) {
+					temp = new Compagnia();
+					temp.setId(rs.getLong("c.id"));
+					temp.setRagioneSociale(rs.getString("ragionesociale"));
+					temp.setFatturatoAnnuo(rs.getInt("fatturatoannuo"));
+					temp.setDataFondazione(DateConverter.fromSqlToUtil(rs.getDate("datafondazione")));
+					result.add(temp);
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	@Override
